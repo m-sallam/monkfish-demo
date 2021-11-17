@@ -7,6 +7,7 @@ import { Container, Button, Grid, GridItem, IconButton, Heading } from "@chakra-
 import { ArrowBackIcon, AddIcon } from '@chakra-ui/icons'
 
 function inputHandler(event, game, setGame) {
+  if (game.isGameOver()) return false;
   event.chessboard.removeMarkers(undefined, MARKER_TYPE.dot);
   event.chessboard.removeMarkers(undefined, MARKER_TYPE.square);
 
