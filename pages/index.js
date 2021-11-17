@@ -117,7 +117,7 @@ export default function Home() {
 
       <div style={{ position: 'absolute', right: '10px', top: '10px' }}>
         <a href='https://github.com/m-sallam/monkfish' target='_blank' rel="noreferrer">
-          <Image src='/github.png' alt='github' width='40px' height='40px' />
+          <Image src='/github.png' alt='github' width='34px' height='34px' />
         </a>
       </div>
 
