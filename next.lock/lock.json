@@ -1,0 +1,6 @@
+{
+  "https://cdn.skypack.dev/-/cm-chessboard@v3.15.1-pOq1RDZm4zQv5hspLllQ/dist=es2019,mode=imports/optimized/cm-chessboard.js": { "integrity": "sha512-DvB1JhZ7b/NJd7wHtr2nFQee4AuWfiuecFQkQ4+aMSF2brPKEJqC771GMx92j6Pqu9gL2hntoIEME/r91uNl5Q==", "contentType": "application/javascript; charset=utf-8" },
+  "https://cdn.skypack.dev/cm-chessboard": { "integrity": "sha512-sozhrjEpm1FEVKjkpHffvxOP+XkV0bWIHxwpxNnbio1l5W1Ash/ThN1MrAJD2w66QFPFmRRJKKwMfkpKCB3N8w==", "contentType": "application/javascript; charset=utf-8" },
+  "https://cdn.skypack.dev/cm-chessboard/assets/styles/cm-chessboard.css": { "resolved": "https://cdn.skypack.dev/-/cm-chessboard@v3.15.1-pOq1RDZm4zQv5hspLllQ/dist=es2019,mode=raw/assets/styles/cm-chessboard.css", "integrity": "sha512-foxdAh9NtKhMXXVdfxwigIwh/tAWDq6LmFsrWPputT8Tu9amQO7rg9PTgAWsc6xSZz4ywORU1JmvLaqzTLRFSg==", "contentType": "text/css; charset=utf-8" },
+  "version": 1
+}

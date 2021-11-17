@@ -1,0 +1,16 @@
+/*
+ * Skypack CDN - cm-chessboard@3.15.1
+ *
+ * Learn more:
+ *   📙 Package Documentation: https://www.skypack.dev/view/cm-chessboard
+ *   📘 Skypack Documentation: https://www.skypack.dev/docs
+ *
+ * Pinned URL: (Optimized for Production)
+ *   ▶️ Normal: https://cdn.skypack.dev/pin/cm-chessboard@v3.15.1-pOq1RDZm4zQv5hspLllQ/mode=imports/optimized/cm-chessboard.js
+ *   ⏩ Minified: https://cdn.skypack.dev/pin/cm-chessboard@v3.15.1-pOq1RDZm4zQv5hspLllQ/mode=imports,min/optimized/cm-chessboard.js
+ *
+ */
+
+// Browser-Optimized Imports (Don't directly import the URLs below in your application!)
+export * from '/-/cm-chessboard@v3.15.1-pOq1RDZm4zQv5hspLllQ/dist=es2019,mode=imports/optimized/cm-chessboard.js';
+export {default} from '/-/cm-chessboard@v3.15.1-pOq1RDZm4zQv5hspLllQ/dist=es2019,mode=imports/optimized/cm-chessboard.js';

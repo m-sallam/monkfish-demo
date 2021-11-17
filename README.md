@@ -1,2 +1,1 @@
-# monkfish-demo
-A demo for Monkfish chess engine
+A Demo for [Monkfish](https://github.com/m-sallam/monkfish)
