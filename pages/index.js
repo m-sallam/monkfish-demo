@@ -45,7 +45,7 @@ function inputHandler(event, game, setGame) {
         setTimeout(() => {
           const piece = game.pieceOnSquare(randomMove.from);
           if ((piece === 'p' || piece === 'P') && (randomMove.to.charAt(1) === '8' || randomMove.to.charAt(1) === '1')) {
-            randomMove.promotion = 'Q';
+            randomMove.promotion = 'q';
           }
           game.move(randomMove);
           setGame({ game });
