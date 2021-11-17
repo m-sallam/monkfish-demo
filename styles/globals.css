@@ -1,6 +1,5 @@
 html,
 body {
-  background-color: #fdfaf5;
   padding: 0;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
@@ -16,7 +15,7 @@ a {
   box-sizing: border-box;
 }
 
-#__next {
-  background-color: #fdfaf5;
+.image_dark {
+  filter: invert(1);
 }
 

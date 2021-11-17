@@ -3,8 +3,8 @@ import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 import { Game } from 'monkfish'
 import { Chessboard, INPUT_EVENT_TYPE, MARKER_TYPE, COLOR} from 'https://cdn.skypack.dev/cm-chessboard'
-import { Container, Button, Grid, GridItem, IconButton, Heading } from "@chakra-ui/react"
-import { ArrowBackIcon, AddIcon } from '@chakra-ui/icons'
+import { Container, Button, Grid, GridItem, IconButton, Heading, useColorMode, Link } from "@chakra-ui/react"
+import { ArrowBackIcon, AddIcon, MoonIcon, SunIcon } from '@chakra-ui/icons'
 
 function inputHandler(event, game, setGame) {
   if (game.isGameOver()) return false;
@@ -66,6 +66,7 @@ export default function Home() {
   const [{ game }, setGame] = useState({ game: new Game() })
   const [board, setBoard] = useState(null)
   const boardRef = useRef(null)
+  const { colorMode, toggleColorMode } = useColorMode()
 
 
   useEffect(() => {
@@ -116,10 +117,11 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div style={{ position: 'absolute', right: '10px', top: '10px' }}>
-        <a href='https://github.com/m-sallam/monkfish' target='_blank' rel="noreferrer">
-          <Image src='/github.png' alt='github' width='34px' height='34px' />
-        </a>
+      <div style={{ position: 'absolute', right: '0', top: '10px' }}>
+        <IconButton icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />} variant='none' onClick={toggleColorMode} />
+        <Button as={Link} href="https://github.com/m-sallam/monkfish" isExternal variant='none'>
+          <Image className={colorMode === 'dark' ? 'image_dark' : ''} src='/github.png' alt='github' width='30px' height='30px' />
+        </Button>
       </div>
 
       <Grid templateColumns="repeat(7, 1fr)" gap={4} my='10px'>
