@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Image from 'next/image'
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { Game, squareToBoardPositionNotation } from 'monkfish'
+import { useEffect, useRef, useState } from 'react'
+import { Game } from 'monkfish'
 import { Chessboard, INPUT_EVENT_TYPE, MARKER_TYPE, COLOR} from 'https://cdn.skypack.dev/cm-chessboard'
 import { Container, Button, Grid, GridItem, IconButton, Heading } from "@chakra-ui/react"
 import { ArrowBackIcon, AddIcon } from '@chakra-ui/icons'
@@ -16,7 +16,7 @@ function inputHandler(event, game, setGame) {
     const moves = game.possibleMovesForPosition(event.square);
     for (const move of moves) {
       event.chessboard.addMarker(
-        squareToBoardPositionNotation(move.to),
+        move.to,
         MARKER_TYPE.dot,
       );
     }
@@ -24,7 +24,12 @@ function inputHandler(event, game, setGame) {
     return moves.length > 0;
   } else if (event.type === INPUT_EVENT_TYPE.moveDone) {
     try {
-      game.move({ from: event.squareFrom, to: event.squareTo });
+      const piece = game.pieceOnSquare(event.squareFrom);
+      const move = { from: event.squareFrom, to: event.squareTo }
+      if ((piece === 'p' || piece === 'P') && (event.squareTo.charAt(1) === '8' || event.squareTo.charAt(1) === '1')) {
+        move.promotion = 'Q';
+      }
+      game.move(move);
       setGame({ game });
 
       event.chessboard.removeMarkers(undefined, MARKER_TYPE.square);
@@ -37,6 +42,10 @@ function inputHandler(event, game, setGame) {
         const randomMove = possibleMoves[randomIndex];
 
         setTimeout(() => {
+          const piece = game.pieceOnSquare(randomMove.from);
+          if ((piece === 'p' || piece === 'P') && (randomMove.to.charAt(1) === '8' || randomMove.to.charAt(1) === '1')) {
+            randomMove.promotion = 'Q';
+          }
           game.move(randomMove);
           setGame({ game });
           event.chessboard.enableMoveInput((e) => inputHandler(e, game, setGame), COLOR.white);
