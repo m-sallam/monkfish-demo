@@ -37,24 +37,7 @@ function inputHandler(event, game, setGame) {
       event.chessboard.disableMoveInput();
       event.chessboard.setPosition(game.fen());
 
-      const possibleMoves = game.possibleMoves();
-      if (possibleMoves.length) {
-        const randomIndex = Math.floor(Math.random() * possibleMoves.length);
-        const randomMove = possibleMoves[randomIndex];
-
-        setTimeout(() => {
-          const piece = game.pieceOnSquare(randomMove.from);
-          if ((piece === 'p' || piece === 'P') && (randomMove.to.charAt(1) === '8' || randomMove.to.charAt(1) === '1')) {
-            randomMove.promotion = 'q';
-          }
-          game.move(randomMove);
-          setGame({ game });
-          event.chessboard.enableMoveInput((e) => inputHandler(e, game, setGame), COLOR.white);
-          event.chessboard.setPosition(game.fen());
-        }, 500);
-
-        return true;
-      }
+      return true;
     } catch (_) {
       console.warn("invalid move");
     }
@@ -63,11 +46,29 @@ function inputHandler(event, game, setGame) {
 
 
 export default function Home() {
-  const [{ game }, setGame] = useState({ game: new Game() })
+  const [gameState, setGame] = useState({ game: new Game() })
   const [board, setBoard] = useState(null)
   const boardRef = useRef(null)
   const { colorMode, toggleColorMode } = useColorMode()
+  const { game } = gameState
 
+  useEffect(() => {
+    if (game.sideToMove() === 'b') {
+      setTimeout(() => {
+        const bestMove = game.bestMove(4)
+        if (bestMove) {
+          const piece = game.pieceOnSquare(bestMove.from);
+          if ((piece === 'p' || piece === 'P') && (bestMove.to.charAt(1) === '8' || bestMove.to.charAt(1) === '1')) {
+            bestMove.promotion = 'q';
+          }
+          game.move(bestMove);
+          setGame({ game });
+          board.enableMoveInput((e) => inputHandler(e, game, setGame), COLOR.white);
+          board.setPosition(game.fen());
+        }
+      }, 200);
+    }
+  }, [gameState])
 
   useEffect(() => {
     const board = new Chessboard(boardRef.current, {
