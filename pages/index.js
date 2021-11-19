@@ -54,19 +54,27 @@ export default function Home() {
 
   useEffect(() => {
     if (game.sideToMove() === 'b') {
-      setTimeout(() => {
-        const bestMove = game.bestMove(6)
-        if (bestMove) {
-          const piece = game.pieceOnSquare(bestMove.from);
-          if ((piece === 'p' || piece === 'P') && (bestMove.to.charAt(1) === '8' || bestMove.to.charAt(1) === '1')) {
-            bestMove.promotion = 'q';
+      fetch('/api/ai/move/' + encodeURIComponent(game.fen()))
+      .then((res) => res.json())
+      .then(({ move }) => {
+        if (move) {
+          const piece = game.pieceOnSquare(move.from);
+          if ((piece === 'p' || piece === 'P') && (move.to.charAt(1) === '8' || move.to.charAt(1) === '1')) {
+            move.promotion = 'q';
           }
-          game.move(bestMove);
+          game.move(move);
           setGame({ game });
           board.enableMoveInput((e) => inputHandler(e, game, setGame), COLOR.white);
           board.setPosition(game.fen());
         }
-      }, 200);
+      })
+      .catch(err => console.error(err))
+      // setTimeout(() => {
+      //   const bestMove = game.bestMove(6)
+      //   if (bestMove) {
+          
+      //   }
+      // }, 200);
     }
   }, [gameState])
 
