@@ -53,7 +53,7 @@ export default function Home() {
   const { game } = gameState
 
   useEffect(() => {
-    if (game.sideToMove() === 'b') {
+    if (game.sideToMove() === 'b' && !game.isGameOver()) {
       fetch('/api/ai/move/' + encodeURIComponent(game.fen()))
       .then((res) => res.json())
       .then(({ move }) => {
