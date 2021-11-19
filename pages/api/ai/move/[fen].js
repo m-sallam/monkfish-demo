@@ -10,7 +10,7 @@ export default function handler(req, res) {
     case 'GET':
       // Get data from your database
       const game = new Game(fen)
-      res.status(200).json({ move: game.bestMove(6) })
+      res.status(200).json({ move: game.bestMove(5) })
       break
     default:
       res.setHeader('Allow', ['GET'])
