@@ -55,7 +55,7 @@ export default function Home() {
   useEffect(() => {
     if (game.sideToMove() === 'b') {
       setTimeout(() => {
-        const bestMove = game.bestMove(4)
+        const bestMove = game.bestMove(6)
         if (bestMove) {
           const piece = game.pieceOnSquare(bestMove.from);
           if ((piece === 'p' || piece === 'P') && (bestMove.to.charAt(1) === '8' || bestMove.to.charAt(1) === '1')) {
