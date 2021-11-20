@@ -107,6 +107,7 @@ export default function Home() {
 
   const newGame = () => {
     if (workerRef.current) {
+      setThinking(false)
       workerRef.current.terminate()
     }
     setGame({ game: new Game() })
@@ -114,6 +115,7 @@ export default function Home() {
 
   const undo = () => {
     if (workerRef.current) {
+      setThinking(false)
       workerRef.current.terminate()
     }
     if (game.sideToMove() === "w") {
