@@ -3,8 +3,35 @@ import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 import { Game } from 'monkfish'
 import { Chessboard, INPUT_EVENT_TYPE, MARKER_TYPE, COLOR} from 'https://cdn.skypack.dev/cm-chessboard'
-import { Container, Button, Grid, GridItem, IconButton, Heading, useColorMode, Link, SliderTrack, Slider, Box, SliderFilledTrack, SliderThumb, Text } from "@chakra-ui/react"
-import { ArrowBackIcon, AddIcon, MoonIcon, SunIcon } from '@chakra-ui/icons'
+import {
+  Container,
+  Button,
+  Grid,
+  GridItem,
+  IconButton,
+  Heading,
+  useColorMode,
+  Link,
+  SliderTrack,
+  Slider,
+  Box,
+  SliderFilledTrack,
+  SliderThumb,
+  Text,
+  ButtonGroup,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  FormControl,
+  FormLabel,
+  Input,
+  ModalFooter,
+} from "@chakra-ui/react"
+import { ArrowBackIcon, AddIcon, MoonIcon, SunIcon, SettingsIcon } from '@chakra-ui/icons'
 
 function inputHandler(event, game, setGame) {
   if (game.isGameOver()) return false;
@@ -54,6 +81,8 @@ export default function Home() {
   const workerRef = useRef(null)
   const [thinking, setThinking] = useState(false)
   const [depth, setDepth] = useState(5)
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const fenRef = useRef()
 
   useEffect(() => {
     if (game.sideToMove() === 'b' && !game.isGameOver()) {
@@ -113,6 +142,18 @@ export default function Home() {
     setGame({ game: new Game() })
   }
 
+  const newGameWithOptions = () => {
+    if (workerRef.current) {
+      setThinking(false)
+      workerRef.current.terminate()
+    }
+    try {
+      const game = new Game(fenRef.current.value)
+      setGame({ game })
+      onClose()
+    } catch(e) {}
+  }
+
   const undo = () => {
     if (workerRef.current) {
       setThinking(false)
@@ -145,8 +186,11 @@ export default function Home() {
       </div>
 
       <Grid templateColumns="repeat(7, 1fr)" gap={4} my='10px'>
-        <GridItem colSpan={2}>
-          <Button onClick={newGame} leftIcon={<AddIcon />} colorScheme='orange' variant='ghost'> New Game </Button>
+        <GridItem colSpan={2} display='flex' alignItems='center'>
+          <ButtonGroup size="sm" isAttached variant="outline">
+            <Button onClick={newGame} leftIcon={<AddIcon />} colorScheme='orange'> New Game </Button>
+            <IconButton icon={<SettingsIcon />} colorScheme='orange' onClick={onOpen} />
+          </ButtonGroup>
         </GridItem>
         <GridItem colSpan={4} display='flex' alignItems='center'>
           <Text whiteSpace='nowrap' mr='15px' fontSize="md">depth: {depth}</Text>
@@ -159,7 +203,7 @@ export default function Home() {
           </Slider>
         </GridItem>
         <GridItem colStart={7} colEnd={7} display='flex' justifyContent='flex-end'>
-          <IconButton colorScheme="orange" icon={<ArrowBackIcon />} variant="outline" onClick={undo} />
+          <IconButton colorScheme="orange" size="sm" icon={<ArrowBackIcon />} variant="outline" onClick={undo} />
         </GridItem>
       </Grid>
 
@@ -169,6 +213,31 @@ export default function Home() {
         {game.status() === 'playing' ? '' : game.status()}
         {thinking ? <Thinking /> : ''}
       </Heading>
+
+
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Create new game</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+            <FormControl>
+              <FormLabel>FEN</FormLabel>
+              <Input ref={fenRef} placeholder="" />
+            </FormControl>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="orange" mr={3} onClick={newGameWithOptions} >
+              New Game
+            </Button>
+            <Button onClick={onClose}>Cancel</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
   </Container>
   )
 }
