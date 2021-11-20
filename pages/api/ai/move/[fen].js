@@ -10,7 +10,7 @@ export default function handler(req, res) {
     case 'GET':
       // Get data from your database
       const game = new Game(fen)
-      const depth = game.state().moveCount > 10 ? 5 : 4
+      const depth = game.state().moveCount > 20 ? 5 : 4
       res.status(200).json({ move: game.bestMove(depth) })
       break
     default:
