@@ -87,7 +87,7 @@ export default function Home() {
   const fenRef = useRef()
 
   useEffect(() => {
-    if (game.sideToMove() === 'b' && !game.isGameOver()) {
+    if (game.sideToMove() === 'b' && !game.isGameOver() && board) {
       setThinking(true)
       workerRef.current = new Worker(
         new URL('../worker.js', import.meta.url)
@@ -110,7 +110,7 @@ export default function Home() {
 
       return () => workerRef.current.terminate()
     }
-  }, [gameState])
+  }, [gameState, board])
 
   useEffect(() => {
     const board = new Chessboard(boardRef.current, {
