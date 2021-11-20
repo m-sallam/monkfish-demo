@@ -30,6 +30,8 @@ import {
   FormLabel,
   Input,
   ModalFooter,
+  Code,
+  Divider,
 } from "@chakra-ui/react"
 import { ArrowBackIcon, AddIcon, MoonIcon, SunIcon, SettingsIcon } from '@chakra-ui/icons'
 
@@ -221,18 +223,21 @@ export default function Home() {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Create new game</ModalHeader>
+          <ModalHeader>Settings</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
+            <Text size='md'>Current Game FEN</Text>
+            <Code whiteSpace='nowrap' overflowX='auto' width='100%'>{game.fen()}</Code>
+           <Divider my='2rem' />
             <FormControl>
-              <FormLabel>FEN</FormLabel>
+              <FormLabel>New Game FEN</FormLabel>
               <Input ref={fenRef} placeholder="" />
             </FormControl>
           </ModalBody>
 
           <ModalFooter>
             <Button colorScheme="orange" mr={3} onClick={newGameWithOptions} >
-              New Game
+              New Game From FEN
             </Button>
             <Button onClick={onClose}>Cancel</Button>
           </ModalFooter>
