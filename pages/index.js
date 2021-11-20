@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 import { Game } from 'monkfish'
 import { Chessboard, INPUT_EVENT_TYPE, MARKER_TYPE, COLOR} from 'https://cdn.skypack.dev/cm-chessboard'
-import { Container, Button, Grid, GridItem, IconButton, Heading, useColorMode, Link } from "@chakra-ui/react"
+import { Container, Button, Grid, GridItem, IconButton, Heading, useColorMode, Link, SliderTrack, Slider, Box, SliderFilledTrack, SliderThumb, Text } from "@chakra-ui/react"
 import { ArrowBackIcon, AddIcon, MoonIcon, SunIcon } from '@chakra-ui/icons'
 
 function inputHandler(event, game, setGame) {
@@ -51,30 +51,33 @@ export default function Home() {
   const boardRef = useRef(null)
   const { colorMode, toggleColorMode } = useColorMode()
   const { game } = gameState
+  const workerRef = useRef(null)
+  const [thinking, setThinking] = useState(false)
+  const [depth, setDepth] = useState(5)
 
   useEffect(() => {
     if (game.sideToMove() === 'b' && !game.isGameOver()) {
-      fetch('/api/ai/move/' + encodeURIComponent(game.fen()))
-      .then((res) => res.json())
-      .then(({ move }) => {
+      setThinking(true)
+      workerRef.current = new Worker(
+        new URL('../worker.js', import.meta.url)
+      );
+      workerRef.current.onmessage = (event) => {
+        const { move } = event.data
         if (move) {
           const piece = game.pieceOnSquare(move.from);
           if ((piece === 'p' || piece === 'P') && (move.to.charAt(1) === '8' || move.to.charAt(1) === '1')) {
             move.promotion = 'q';
           }
           game.move(move);
-          setGame({ game });
-          board.enableMoveInput((e) => inputHandler(e, game, setGame), COLOR.white);
-          board.setPosition(game.fen());
+          setGame({ game })
+          board.enableMoveInput((e) => inputHandler(e, game, setGame), COLOR.white)
+          board.setPosition(game.fen())
+          setThinking(false)
         }
-      })
-      .catch(err => console.error(err))
-      // setTimeout(() => {
-      //   const bestMove = game.bestMove(6)
-      //   if (bestMove) {
-          
-      //   }
-      // }, 200);
+      }
+      workerRef.current.postMessage({ fen: game.fen(), depth });
+
+      return () => workerRef.current.terminate()
     }
   }, [gameState])
 
@@ -103,10 +106,16 @@ export default function Home() {
   }, [game]) // eslint-disable-line
 
   const newGame = () => {
+    if (workerRef.current) {
+      workerRef.current.terminate()
+    }
     setGame({ game: new Game() })
   }
 
   const undo = () => {
+    if (workerRef.current) {
+      workerRef.current.terminate()
+    }
     if (game.sideToMove() === "w") {
       game.undo()
       game.undo()
@@ -137,6 +146,16 @@ export default function Home() {
         <GridItem colSpan={2}>
           <Button onClick={newGame} leftIcon={<AddIcon />} colorScheme='orange' variant='ghost'> New Game </Button>
         </GridItem>
+        <GridItem colSpan={4} display='flex' alignItems='center'>
+          <Text whiteSpace='nowrap' mr='15px' fontSize="md">depth: {depth}</Text>
+          <Slider defaultValue={depth} min={1} max={8} step={1} onChange={(value) => setDepth(value)}>
+            <SliderTrack bg="orange.100">
+              <Box position="relative" right={10} />
+              <SliderFilledTrack bg="orange" />
+            </SliderTrack>
+            <SliderThumb boxSize={4} />
+          </Slider>
+        </GridItem>
         <GridItem colStart={7} colEnd={7} display='flex' justifyContent='flex-end'>
           <IconButton colorScheme="orange" icon={<ArrowBackIcon />} variant="outline" onClick={undo} />
         </GridItem>
@@ -146,7 +165,29 @@ export default function Home() {
 
       <Heading as="h2" size="xl" textAlign='center' mt='5px'>
         {game.status() === 'playing' ? '' : game.status()}
+        {thinking ? <Thinking /> : ''}
       </Heading>
   </Container>
   )
+}
+
+export const Thinking = () => {
+  const [length, setLength] = useState(0)
+  const [thinking, setThinking] = useState('thinking')
+
+  useEffect(() => {
+    const interval = setTimeout(() => {
+      if (length < 3) {
+        setLength((p) => p + 1)
+      } else {
+        setLength(0)
+      }
+    }, 500)
+
+    setThinking('thinking'.concat('.'.repeat(length)))
+
+    return () => clearTimeout(interval)
+  }, [length])
+
+  return <>{thinking}</>
 }
